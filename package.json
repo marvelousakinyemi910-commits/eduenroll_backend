@@ -2,11 +2,11 @@
   "name": "eduenroll-backend",
   "version": "1.0.0",
   "description": "EduEnroll - University Course Registration System (Backend API)",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+   "start": "node dist/src/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:deploy": "prisma migrate deploy",
@@ -48,6 +48,6 @@
     "nodemon": "^3.1.4",
     "prisma": "^5.19.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "5.5.4"
   }
 }
