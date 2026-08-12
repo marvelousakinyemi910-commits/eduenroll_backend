@@ -23,23 +23,25 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
   }
 
   // Known Prisma errors (unique constraint, FK, not found, etc.)
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    if (err.code === "P2002") {
-      return res.status(409).json({
-        success: false,
-        message: `Duplicate value for field(s): ${(err.meta?.target as string[])?.join(", ")}`,
-      });
-    }
-    if (err.code === "P2025") {
-      return res.status(404).json({ success: false, message: "Record not found" });
-    }
-    if (err.code === "P2003") {
-      return res.status(400).json({ success: false, message: "Invalid reference to related record" });
-    }
+if (err instanceof Prisma.PrismaClientKnownRequestError) {
+  if (err.code === "P2002") {
+    const target = err.meta?.target;
+    const fields = Array.isArray(target) ? target.join(", ") : String(target ?? "unknown");
+    return res.status(409).json({
+      success: false,
+      message: `Duplicate value for field(s): ${fields}`,
+    });
   }
+  if (err.code === "P2025") {
+    return res.status(404).json({ success: false, message: "Record not found" });
+  }
+  if (err.code === "P2003") {
+    return res.status(400).json({ success: false, message: "Invalid reference to related record" });
+  }
+}
 
-  // Our own thrown errors
-  if (err instanceof ApiError) {
+// Our own thrown errors
+if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       success: false,
       message: err.message,
@@ -56,3 +58,4 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
     ...(env.isProd ? {} : { stack: err instanceof Error ? err.stack : undefined }),
   });
 }
+
